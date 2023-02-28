@@ -1,0 +1,36 @@
+{
+  "name": "linov-community-admin",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "nuxt --port 3001",
+    "build": "nuxt build",
+    "build-dev": "nuxt build --dotenv .env.staging",
+    "start": "nuxt start --port 8001",
+    "generate": "nuxt generate",
+    "serve": "nuxt build && nuxt start --port 3001",
+    "deploy": "sh deploy.sh admin"
+  },
+  "dependencies": {
+    "@nuxtjs/auth-next": "5.0.0-1642152945.3bb6b5f",
+    "@nuxtjs/axios": "^5.13.6",
+    "@nuxtjs/dayjs": "^1.4.1",
+    "@tailwindcss/forms": "^0.4.0",
+    "@toast-ui/vue-editor": "^3.2.2",
+    "core-js": "^3.19.3",
+    "nuxt": "^2.15.8",
+    "vue": "^2.6.14",
+    "chart.js": "^3.8.0",
+    "vue-chartjs": "^4.0.0",
+    "vue-froala-wysiwyg": "^4.0.15",
+    "vue-select": "^3.20.0",
+    "vue-server-renderer": "^2.6.14",
+    "vue-template-compiler": "^2.6.14",
+    "vue-toastification": "^1.7.14",
+    "webpack": "^4.46.0",
+    "xlsx": "^0.14.4"
+  },
+  "devDependencies": {
+    "vue-template-babel-compiler": "^2.0.0"
+  }
+}

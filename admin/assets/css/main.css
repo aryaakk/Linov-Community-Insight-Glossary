@@ -1,0 +1,32 @@
+.table > :not(caption) > * > * {
+    padding: 0.625rem 0.625rem;
+}
+
+.btn-active{
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    cursor: pointer;
+    color: #62B6EE;
+}
+.trainer .list-group-item {
+    border: 0px solid #d9dee3 !important;
+}
+.table-basic{
+    border-radius: 10px;
+    border: 1px solid #F4F4F7;
+}
+.table-basic th{
+    text-transform: capitalize; 
+    background: #F4F4F7;
+    font-size: 14px;
+}
+.form-check-input {
+    border-radius: 6px !important;
+}
+.link{
+    color: #696cff;
+    cursor: pointer;
+}
+.table-icon{
+    font-size: 10px;
+}

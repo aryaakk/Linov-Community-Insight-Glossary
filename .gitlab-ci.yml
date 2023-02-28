@@ -1,0 +1,87 @@
+# Official framework image. Look for the different tagged releases at:
+# https://hub.docker.com/r/library/php
+image: php:latest
+
+# Pick zero or more services to be used on all builds.
+# Only needed when using a docker container to run your tests in.
+# Check out: https://docs.gitlab.com/ee/ci/services/index.html
+services:
+  - mysql:latest
+
+variables:
+  MYSQL_DATABASE: linov_community_test
+  MYSQL_ROOT_PASSWORD: root
+
+# This folder is cached between builds
+# https://docs.gitlab.com/ee/ci/yaml/index.html#cache
+cache:
+  paths:
+    - backend/vendor/
+    - frontend/node_modules/
+    - admin/node_modules/
+    - frontend/.nuxt-deploy/
+
+# This is a basic example for a gem or script which doesn't use
+# services such as redis or postgres
+before_script:
+  # Update packages
+  - apt-get update -yqq
+  # Prep for Node
+  - apt-get install gnupg -yqq
+  # Upgrade to Node 8
+  - curl -sL https://deb.nodesource.com/setup_8.x | bash -
+  # Install dependencies
+  - apt-get install git nodejs libcurl4-gnutls-dev libicu-dev libmcrypt-dev libvpx-dev libjpeg-dev libpng-dev libxpm-dev zlib1g-dev libfreetype6-dev libxml2-dev libexpat1-dev libbz2-dev libgmp3-dev libldap2-dev unixodbc-dev libpq-dev libsqlite3-dev libaspell-dev libsnmp-dev libpcre3-dev libtidy-dev -yqq
+  # Install php extensions
+  - docker-php-ext-install mbstring pdo_mysql curl json intl gd xml zip bz2 opcache
+  # Install & enable Xdebug for code coverage reports
+  - pecl install xdebug
+  - docker-php-ext-enable xdebug
+  # Install Composer and project dependencies.
+  - curl -sS https://getcomposer.org/installer | php
+  - php composer.phar install
+  # Copy over testing configuration.
+  # Don't forget to set the database config in .env.testing correctly
+  - cd backend
+  - cp .env.testing .env
+  # Generate an application key. Re-cache.
+  - php artisan key:generate
+  - php artisan config:clear
+  # Run database migrations.
+  - php artisan migrate -v
+  # Run database seed
+  - php artisan db:seed --class=BaseSeeder
+  # Set storage cache permission
+  - chmod -R 777 storage bootstrap/cache
+  # Set npm for frontend
+  - cd ../frontend
+  # Copy example env
+  - cp .env.example .env
+  # Install NPM dependencies
+  - npm install
+  # Setup deploy folder
+  - if [ ! -d ".nuxt-deploy" ]; then
+      git clone https://gitlab.com/linovhr-4/linov-community-deploy.git .nuxt-deploy;
+    fi
+  # Set npm for admin
+  - cd ../admin
+  # Copy exmple env
+  - cp .env.example .env
+  # Install NPM dependencies
+  - npm install
+
+test:
+  environment: develop
+  script:
+    - cd backend
+    - test_result=$(php vendor/bin/phpunit --coverage-text) || true
+    - if grep -q 'OK' <<< "$test_result"; then echo "Tests passed!" exit 0 else
+      echo "Tests failed!" exit 1 fi
+deploy:
+  environment: develop
+  stage: deploy
+  script:
+    - echo "Deploying apps to the development environment"
+    - cd frontend
+    - npm run generate-dev
+    - npm run deploy-dev

@@ -1,0 +1,1518 @@
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+DROP TABLE IF EXISTS `art_comments`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `art_comments` (
+  `id` varchar(36) CHARACTER SET latin1 NOT NULL,
+  `article_id` varchar(36) CHARACTER SET latin1 NOT NULL,
+  `comment_article_id` varchar(36) CHARACTER SET latin1 DEFAULT NULL,
+  `user_id` varchar(36) CHARACTER SET latin1 NOT NULL,
+  `comment` varchar(255) CHARACTER SET latin1 NOT NULL,
+  `numb_comment` int(5) DEFAULT NULL,
+  `numb_c2c` int(5) DEFAULT NULL,
+  `status` varchar(10) CHARACTER SET latin1 DEFAULT NULL,
+  `approve_by` timestamp NULL DEFAULT NULL,
+  `created_by` varchar(36) CHARACTER SET latin1 DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_by` varchar(36) CHARACTER SET latin1 DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `deleted_at` timestamp NULL DEFAULT NULL,
+  `version` smallint(3) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ROW_FORMAT=DYNAMIC;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `art_courses`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `art_courses` (
+  `id` varchar(36) COLLATE utf8_unicode_ci NOT NULL,
+  `article_id` varchar(36) COLLATE utf8_unicode_ci NOT NULL,
+  `title` varchar(150) COLLATE utf8_unicode_ci NOT NULL,
+  `description` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `sequence` smallint(6) NOT NULL DEFAULT '0',
+  `created_by` varchar(36) COLLATE utf8_unicode_ci NOT NULL,
+  `updated_by` varchar(36) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `created_at` timestamp NOT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_courses_article` (`article_id`),
+  CONSTRAINT `fk_courses_article` FOREIGN KEY (`article_id`) REFERENCES `art_trx_articles` (`id`) ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `art_detail_view_article`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `art_detail_view_article` (
+  `id` varchar(36) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `article_id` varchar(36) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `url` text COLLATE utf8_unicode_ci,
+  `session_id` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `user_id` varchar(36) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `ip_address` varchar(20) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `user_agent` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `art_enrollment_details`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `art_enrollment_details` (
+  `id` varchar(36) COLLATE utf8_unicode_ci NOT NULL,
+  `enrollment_id` varchar(36) COLLATE utf8_unicode_ci NOT NULL,
+  `material_id` varchar(36) COLLATE utf8_unicode_ci NOT NULL,
+  `is_complate` tinyint(1) DEFAULT '0',
+  `created_at` timestamp NOT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_enrollment_detail` (`enrollment_id`),
+  KEY `fk_material_detail` (`material_id`),
+  CONSTRAINT `fk_enrollment_detail` FOREIGN KEY (`enrollment_id`) REFERENCES `art_enrollments` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_material_detail` FOREIGN KEY (`material_id`) REFERENCES `art_materials` (`id`) ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `art_enrollments`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `art_enrollments` (
+  `id` varchar(36) COLLATE utf8_unicode_ci NOT NULL,
+  `user_id` varchar(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `article_id` varchar(36) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_enroll_user` (`user_id`),
+  KEY `fk_enroll_article` (`article_id`),
+  CONSTRAINT `fk_enroll_article` FOREIGN KEY (`article_id`) REFERENCES `art_trx_articles` (`id`) ON UPDATE CASCADE,
+  CONSTRAINT `fk_enroll_user` FOREIGN KEY (`user_id`) REFERENCES `com_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `art_glossary`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `art_glossary` (
+  `id` varchar(36) COLLATE utf8_unicode_ci NOT NULL,
+  `article_id` varchar(36) COLLATE utf8_unicode_ci NOT NULL,
+  `title` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `letter` char(1) COLLATE utf8_unicode_ci NOT NULL,
+  `created_at` timestamp NOT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_glosarry_article` (`article_id`),
+  CONSTRAINT `fk_glosarry_article` FOREIGN KEY (`article_id`) REFERENCES `art_trx_articles` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `art_materials`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `art_materials` (
+  `id` varchar(36) COLLATE utf8_unicode_ci NOT NULL,
+  `course_id` varchar(36) COLLATE utf8_unicode_ci NOT NULL,
+  `title` varchar(150) COLLATE utf8_unicode_ci NOT NULL,
+  `type` enum('content','pdf') COLLATE utf8_unicode_ci NOT NULL,
+  `content` text COLLATE utf8_unicode_ci,
+  `material_url` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `is_quis` tinyint(1) DEFAULT '0',
+  `estimated_time` int(11) DEFAULT '0',
+  `created_by` varchar(36) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `updated_by` varchar(36) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `created_at` timestamp NOT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_material_course` (`course_id`),
+  CONSTRAINT `fk_material_course` FOREIGN KEY (`course_id`) REFERENCES `art_courses` (`id`) ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `art_trx_articles`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `art_trx_articles` (
+  `id` varchar(36) COLLATE utf8_unicode_ci NOT NULL,
+  `slug_id` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `trx_code` varchar(36) COLLATE utf8_unicode_ci NOT NULL,
+  `trx_number` int(11) NOT NULL AUTO_INCREMENT,
+  `trx_date` datetime NOT NULL,
+  `user_id` varchar(36) COLLATE utf8_unicode_ci NOT NULL,
+  `title` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `detail` text COLLATE utf8_unicode_ci NOT NULL,
+  `source` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `banner` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `open_discuss` enum('1','0') COLLATE utf8_unicode_ci DEFAULT '0',
+  `is_ads` enum('0','1') COLLATE utf8_unicode_ci NOT NULL,
+  `num_ads` smallint(6) DEFAULT NULL,
+  `ads_start_date` date DEFAULT NULL,
+  `ads_end_date` date DEFAULT NULL,
+  `status` enum('waiting','paid','published','finished','canceled','drafted') COLLATE utf8_unicode_ci NOT NULL,
+  `paid_date` date DEFAULT NULL,
+  `published_date` datetime DEFAULT NULL,
+  `finished_date` date DEFAULT NULL,
+  `banned_date` date DEFAULT NULL,
+  `canceled_date` date DEFAULT NULL,
+  `category` json DEFAULT NULL,
+  `tags` json DEFAULT NULL,
+  `meta_desc` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `meta_title` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `created_by` varchar(36) COLLATE utf8_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_by` varchar(36) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `version` smallint(6) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_slug` (`slug_id`),
+  KEY `trx_number` (`trx_number`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `art_trx_orders`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `art_trx_orders` (
+  `id` varchar(36) COLLATE utf8_unicode_ci NOT NULL,
+  `trx_code` varchar(36) COLLATE utf8_unicode_ci NOT NULL,
+  `trx_number` int(11) NOT NULL,
+  `trx_date` datetime NOT NULL,
+  `user_id` varchar(36) COLLATE utf8_unicode_ci NOT NULL,
+  `quantity` int(11) NOT NULL,
+  `total_price` float NOT NULL,
+  `note` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `is_confirm_agree` enum('0','1') COLLATE utf8_unicode_ci NOT NULL,
+  `tf_upload` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `note_account` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `note_desti_account` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `status` enum('order','paid','canceled') COLLATE utf8_unicode_ci NOT NULL,
+  `created_by` varchar(36) COLLATE utf8_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_by` varchar(36) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `version` smallint(6) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `com_category_consultants`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `com_category_consultants` (
+  `id` varchar(36) NOT NULL,
+  `code` varchar(36) DEFAULT NULL,
+  `name` varchar(100) DEFAULT NULL,
+  `is_active` enum('1','0') DEFAULT NULL,
+  `created_by` varchar(36) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_by` varchar(36) DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `version` smallint(3) DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `com_cities`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `com_cities` (
+  `id` varchar(36) DEFAULT NULL,
+  `code` varchar(36) DEFAULT NULL,
+  `state_id` varchar(36) DEFAULT NULL,
+  `name` varchar(100) DEFAULT NULL,
+  `is_active` enum('0','1') DEFAULT NULL,
+  `created_by` varchar(36) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_by` varchar(36) DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `version` smallint(6) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `com_companies`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `com_companies` (
+  `id` varchar(36) COLLATE utf8_unicode_ci NOT NULL,
+  `code` varchar(36) COLLATE utf8_unicode_ci NOT NULL,
+  `model` enum('1','2') COLLATE utf8_unicode_ci NOT NULL,
+  `name` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `description` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `address` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `city_id` varchar(36) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `is_active` enum('0','1') COLLATE utf8_unicode_ci NOT NULL,
+  `created_by` varchar(36) COLLATE utf8_unicode_ci NOT NULL,
+  `created_at` timestamp NOT NULL,
+  `updated_by` varchar(36) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `version` smallint(6) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `com_company_types`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `com_company_types` (
+  `id` varchar(36) COLLATE utf8_unicode_ci NOT NULL,
+  `code` varchar(36) COLLATE utf8_unicode_ci NOT NULL,
+  `name` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `description` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `is_active` enum('0','1') COLLATE utf8_unicode_ci NOT NULL,
+  `created_by` varchar(36) COLLATE utf8_unicode_ci NOT NULL,
+  `created_at` timestamp NOT NULL,
+  `updated_by` varchar(36) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `version` smallint(6) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `com_industries`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `com_industries` (
+  `id` varchar(36) NOT NULL,
+  `code` varchar(8) DEFAULT NULL,
+  `name` varchar(100) DEFAULT NULL,
+  `is_active` enum('0','1') DEFAULT '0',
+  `created_by` varchar(36) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_by` varchar(36) DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `version` smallint(3) DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `com_majors`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `com_majors` (
+  `id` varchar(36) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `code` varchar(36) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `name` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `is_active` enum('0','1') COLLATE utf8_unicode_ci DEFAULT NULL,
+  `created_by` varchar(36) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `version` smallint(6) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `com_notifications`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `com_notifications` (
+  `id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `notifiable_type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `notifiable_id` varchar(36) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `message_title` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `message` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `icon` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `detail_id` varchar(36) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `path` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `data` text COLLATE utf8mb4_unicode_ci,
+  `read_at` timestamp NULL DEFAULT NULL,
+  `created_by` varchar(36) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `updated_by` varchar(36) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `com_notifications_notifiable_type_notifiable_id_index` (`notifiable_type`,`notifiable_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `com_phone_codes`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `com_phone_codes` (
+  `id` varchar(36) NOT NULL,
+  `code` varchar(8) DEFAULT NULL,
+  `name` varchar(100) DEFAULT NULL,
+  `phone_code` varchar(6) DEFAULT NULL,
+  `is_active` enum('0','1') DEFAULT '0',
+  `created_by` varchar(36) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_by` varchar(36) DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `version` smallint(3) DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `com_positions`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `com_positions` (
+  `id` varchar(36) NOT NULL,
+  `code` varchar(8) DEFAULT NULL,
+  `name` varchar(100) DEFAULT NULL,
+  `is_active` enum('0','1') DEFAULT '0',
+  `created_by` varchar(36) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_by` varchar(36) DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `version` smallint(3) DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `com_skills`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `com_skills` (
+  `id` varchar(36) NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `is_active` tinyint(1) NOT NULL,
+  `created_at` timestamp NOT NULL,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` varchar(36) NOT NULL,
+  `updated_by` varchar(36) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `com_social_medias`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `com_social_medias` (
+  `id` varchar(36) NOT NULL,
+  `name` varchar(36) DEFAULT NULL,
+  `icon` varchar(100) DEFAULT NULL,
+  `url` varchar(100) DEFAULT NULL,
+  `is_active` enum('0','1') DEFAULT '0',
+  `created_by` varchar(36) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_by` varchar(36) DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `version` smallint(3) DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `com_states`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `com_states` (
+  `id` varchar(36) DEFAULT NULL,
+  `code` varchar(36) DEFAULT NULL,
+  `phone_code_id` varchar(36) DEFAULT NULL,
+  `name` varchar(100) DEFAULT NULL,
+  `is_active` enum('0','1') DEFAULT NULL,
+  `created_by` varchar(36) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_by` varchar(36) DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `version` smallint(6) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `com_title_degrees`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `com_title_degrees` (
+  `id` varchar(36) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `code` varchar(36) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `name` varchar(3) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `degree` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `is_active` enum('1','0') COLLATE utf8_unicode_ci DEFAULT NULL,
+  `created_by` varchar(36) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `version` smallint(6) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `com_universities`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `com_universities` (
+  `id` varchar(36) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `code` varchar(36) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `name` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `is_active` enum('1','0') COLLATE utf8_unicode_ci DEFAULT NULL,
+  `created_by` varchar(36) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `version` smallint(6) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `com_user_certificate`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `com_user_certificate` (
+  `id` varchar(36) NOT NULL,
+  `user_id` varchar(36) NOT NULL,
+  `title` varchar(100) NOT NULL,
+  `organization` varchar(50) NOT NULL,
+  `link` varchar(200) NOT NULL,
+  `start_date` date DEFAULT NULL,
+  `end_date` date DEFAULT NULL,
+  `is_novalidate` tinyint(1) NOT NULL,
+  `created_at` timestamp NOT NULL,
+  `updated_at` timestamp NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `com_user_consultants`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `com_user_consultants` (
+  `id` varchar(36) DEFAULT NULL,
+  `user_id` varchar(36) DEFAULT NULL,
+  `category_consultant_id` varchar(36) DEFAULT NULL,
+  `is_active` enum('0','1') DEFAULT NULL,
+  `created_by` varchar(36) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_by` varchar(36) DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `version` smallint(6) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `com_user_educations`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `com_user_educations` (
+  `id` varchar(36) COLLATE utf8_unicode_ci NOT NULL,
+  `user_id` varchar(36) COLLATE utf8_unicode_ci NOT NULL,
+  `title_degree_id` varchar(36) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `other_title` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `university_id` varchar(36) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `other_university` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `major_id` varchar(36) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `other_major` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `is_current` enum('0','1') COLLATE utf8_unicode_ci NOT NULL,
+  `start_date` date NOT NULL,
+  `end_date` date DEFAULT NULL,
+  `created_by` varchar(36) COLLATE utf8_unicode_ci NOT NULL,
+  `created_at` timestamp NOT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `version` smallint(6) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_train_education_trainer` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `com_user_experiences`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `com_user_experiences` (
+  `id` varchar(36) NOT NULL,
+  `user_id` varchar(36) NOT NULL,
+  `company` varchar(100) DEFAULT NULL,
+  `position` varchar(100) DEFAULT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `is_current` enum('0','1') NOT NULL,
+  `start_date` date NOT NULL,
+  `end_date` date DEFAULT NULL,
+  `is_active` enum('0','1') NOT NULL,
+  `created_by` varchar(36) NOT NULL,
+  `created_at` timestamp NOT NULL,
+  `updated_by` varchar(36) DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `version` smallint(6) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `com_user_profiles`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `com_user_profiles` (
+  `id` varchar(36) NOT NULL,
+  `user_id` varchar(36) NOT NULL,
+  `phone_code_id` varchar(36) DEFAULT NULL,
+  `phone` varchar(20) DEFAULT NULL,
+  `company_name` varchar(100) DEFAULT NULL,
+  `industry_id` varchar(36) DEFAULT NULL,
+  `position_id` varchar(36) DEFAULT NULL,
+  `other_position` varchar(100) DEFAULT NULL,
+  `photo` varchar(100) DEFAULT NULL,
+  `city_id` varchar(36) DEFAULT NULL,
+  `birthplace` varchar(100) DEFAULT NULL,
+  `birthdate` date DEFAULT NULL,
+  `about_me` varchar(255) DEFAULT NULL,
+  `link` varchar(255) DEFAULT NULL,
+  `skills` json DEFAULT NULL,
+  `postal_code` varchar(10) DEFAULT NULL,
+  `created_by` varchar(36) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_by` varchar(36) DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `version` smallint(3) DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `com_user_sessions`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `com_user_sessions` (
+  `id` varchar(36) NOT NULL,
+  `user_id` varchar(36) DEFAULT NULL,
+  `end_time` timestamp NULL DEFAULT NULL,
+  `token_id` varchar(100) DEFAULT NULL,
+  `ip_address` varchar(100) DEFAULT NULL,
+  `user_agent` varchar(255) DEFAULT NULL,
+  `is_allowed` enum('0','1') DEFAULT '0',
+  `created_by` varchar(36) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_by` varchar(36) DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `version` smallint(3) DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `com_user_socials`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `com_user_socials` (
+  `id` varchar(36) NOT NULL,
+  `user_id` varchar(36) DEFAULT NULL,
+  `social_media_id` varchar(36) DEFAULT NULL,
+  `url` varchar(100) DEFAULT NULL,
+  `created_by` varchar(36) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_by` varchar(36) DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `version` smallint(3) DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `com_user_utl_emails`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `com_user_utl_emails` (
+  `id` varchar(36) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `user_id` varchar(36) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `is_email` enum('0','1') COLLATE utf8_unicode_ci DEFAULT NULL,
+  `is_newsletter` enum('0','1') COLLATE utf8_unicode_ci DEFAULT NULL,
+  `created_by` varchar(36) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_by` varchar(36) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `version` smallint(6) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `com_users`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `com_users` (
+  `id` varchar(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `role_id` varchar(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `name` varchar(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `email` varchar(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `login_by` enum('konven','google','fb') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT 'konven',
+  `verified_kode` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `is_verify` enum('0','1') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT '0',
+  `verified_date` timestamp NULL DEFAULT NULL,
+  `google_token` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `google_id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `fb_token` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `is_active` enum('0','1') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT '0',
+  `token_linov` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `created_by` varchar(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` varchar(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `version` smallint(3) DEFAULT NULL,
+  `is_consultant` enum('1','0') DEFAULT NULL,
+  `category_consultant_id` varchar(36) DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `con_attach_threads`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `con_attach_threads` (
+  `id` varchar(36) NOT NULL,
+  `type` enum('1','2') DEFAULT NULL,
+  `consul_thread_id` varchar(36) DEFAULT NULL,
+  `con_comment_thread_id` varchar(36) DEFAULT NULL,
+  `file` varchar(100) DEFAULT NULL,
+  `file_type` varchar(10) DEFAULT NULL,
+  `size` decimal(4,0) DEFAULT NULL,
+  `created_by` varchar(36) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `con_comment_threads`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `con_comment_threads` (
+  `id` varchar(36) NOT NULL,
+  `consul_thread_id` varchar(36) DEFAULT NULL,
+  `con_comment_thread_id` varchar(36) DEFAULT NULL,
+  `user_id` varchar(36) DEFAULT NULL,
+  `comment` varchar(255) DEFAULT NULL,
+  `numb_comment` int(5) DEFAULT NULL,
+  `numb_c2c` int(5) DEFAULT NULL,
+  `created_by` varchar(36) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_by` varchar(36) DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `deleted_at` timestamp NULL DEFAULT NULL,
+  `version` smallint(3) DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `con_consul_threads`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `con_consul_threads` (
+  `id` varchar(36) NOT NULL,
+  `user_id` varchar(36) DEFAULT NULL,
+  `slug_id` varchar(120) DEFAULT NULL,
+  `title` varchar(100) DEFAULT NULL,
+  `description` varchar(200) DEFAULT NULL,
+  `category_id` varchar(36) DEFAULT NULL,
+  `user_consul_id` varchar(36) DEFAULT NULL,
+  `is_private` enum('1','0') DEFAULT NULL,
+  `is_active` enum('1','0') DEFAULT NULL,
+  `created_by` varchar(36) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_by` varchar(36) DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `deleted_at` timestamp NULL DEFAULT NULL,
+  `version` smallint(3) DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE KEY `unique_slug` (`slug_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `con_love_threads`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `con_love_threads` (
+  `id` varchar(36) NOT NULL,
+  `consul_thread_id` varchar(36) DEFAULT NULL,
+  `user_id` varchar(36) DEFAULT NULL,
+  `created_by` varchar(36) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `con_share_threads`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `con_share_threads` (
+  `id` varchar(36) NOT NULL,
+  `consul_thread_id` varchar(36) DEFAULT NULL,
+  `user_id` varchar(36) DEFAULT NULL,
+  `created_by` varchar(36) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `con_trx_attach_consultants`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `con_trx_attach_consultants` (
+  `id` varchar(36) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `trx_consultant_id` varchar(36) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `category` enum('1','2','3','4') COLLATE utf8_unicode_ci DEFAULT NULL,
+  `file_attach` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `file_type` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `is_success` enum('0','1') COLLATE utf8_unicode_ci DEFAULT NULL,
+  `created_by` varchar(36) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `con_trx_category_consultants`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `con_trx_category_consultants` (
+  `id` varchar(36) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `trx_consultant_id` varchar(36) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `category_consultant_id` varchar(36) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `created_by` varchar(36) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `con_trx_consultants`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `con_trx_consultants` (
+  `id` varchar(36) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `trx_code` varchar(36) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `trx_number` int(10) NOT NULL AUTO_INCREMENT,
+  `trx_date` datetime DEFAULT NULL,
+  `user_id` varchar(36) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `reason` text COLLATE utf8_unicode_ci,
+  `is_cv` enum('0','1') COLLATE utf8_unicode_ci DEFAULT NULL,
+  `status` enum('waiting','approved','rejected') COLLATE utf8_unicode_ci DEFAULT NULL,
+  `is_active` enum('0','1') COLLATE utf8_unicode_ci DEFAULT NULL,
+  `created_by` varchar(36) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `version` smallint(6) DEFAULT NULL,
+  KEY `trx_number` (`trx_number`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `con_trx_experiences`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `con_trx_experiences` (
+  `id` varchar(36) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `trx_consultant_id` varchar(36) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `name` varchar(200) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `position` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `is_current` enum('0','1') COLLATE utf8_unicode_ci DEFAULT NULL,
+  `period_start` date DEFAULT NULL,
+  `period_end` date DEFAULT NULL,
+  `job_desc` varchar(200) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `created_by` varchar(36) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `con_trx_last_educations`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `con_trx_last_educations` (
+  `id` varchar(36) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `trx_consultant_id` varchar(36) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `title_degree_id` varchar(36) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `other_title` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `university_id` varchar(36) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `other_university` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `major_id` varchar(36) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `other_major` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `is_current` enum('0','1') COLLATE utf8_unicode_ci DEFAULT NULL,
+  `start_date` date DEFAULT NULL,
+  `end_date` date DEFAULT NULL,
+  `created_by` varchar(36) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `version` smallint(6) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `failed_jobs`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `failed_jobs` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `uuid` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `connection` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `queue` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `payload` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `exception` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `failed_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE KEY `failed_jobs_uuid_unique` (`uuid`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `hom_attach_threads`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `hom_attach_threads` (
+  `id` varchar(36) NOT NULL,
+  `type` enum('1','2') DEFAULT '1',
+  `thread_id` varchar(36) DEFAULT NULL,
+  `comment_thread_id` varchar(36) DEFAULT NULL,
+  `file` varchar(100) DEFAULT NULL,
+  `file_type` varchar(15) DEFAULT NULL,
+  `size` decimal(4,0) DEFAULT NULL,
+  `created_by` varchar(36) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `hom_comment_threads`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `hom_comment_threads` (
+  `id` varchar(36) NOT NULL,
+  `thread_id` varchar(36) DEFAULT NULL,
+  `comment_thread_id` varchar(36) DEFAULT NULL,
+  `user_id` varchar(36) DEFAULT NULL,
+  `comment` varchar(200) DEFAULT NULL,
+  `numb_comment` int(5) DEFAULT NULL,
+  `numb_c2c` int(5) DEFAULT NULL,
+  `created_by` varchar(36) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_by` varchar(36) DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `deleted_at` timestamp NULL DEFAULT NULL,
+  `version` smallint(3) DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE,
+  KEY `fk_comment_thread` (`thread_id`),
+  CONSTRAINT `fk_comment_thread` FOREIGN KEY (`thread_id`) REFERENCES `hom_threads` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `hom_detail_view_threads`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `hom_detail_view_threads` (
+  `id` varchar(36) NOT NULL,
+  `thread_id` varchar(36) DEFAULT NULL,
+  `user_id` varchar(36) DEFAULT NULL,
+  `created_by` varchar(36) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE,
+  KEY `fk_view_thread` (`thread_id`),
+  CONSTRAINT `fk_view_thread` FOREIGN KEY (`thread_id`) REFERENCES `hom_threads` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `hom_dismiss_threads`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `hom_dismiss_threads` (
+  `id` varchar(36) NOT NULL,
+  `thread_id` varchar(36) DEFAULT NULL,
+  `user_dismisser_id` varchar(36) DEFAULT NULL,
+  `created_by` varchar(36) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE,
+  KEY `fk_dismiss_thread` (`thread_id`),
+  CONSTRAINT `fk_dismiss_thread` FOREIGN KEY (`thread_id`) REFERENCES `hom_threads` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `hom_duration_polls`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `hom_duration_polls` (
+  `id` varchar(36) NOT NULL,
+  `name` varchar(200) DEFAULT NULL,
+  `convert_day` int(3) DEFAULT NULL,
+  `is_active` enum('0','1') DEFAULT '1',
+  `created_by` varchar(36) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_by` varchar(36) DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `version` smallint(3) DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `hom_love_threads`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `hom_love_threads` (
+  `id` varchar(36) NOT NULL,
+  `thread_id` varchar(36) DEFAULT NULL,
+  `comment_thread_id` varchar(36) DEFAULT NULL,
+  `user_id` varchar(36) DEFAULT NULL,
+  `created_by` varchar(36) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE,
+  KEY `fk_thread_love` (`thread_id`),
+  CONSTRAINT `fk_thread_love` FOREIGN KEY (`thread_id`) REFERENCES `hom_threads` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `hom_report_threads`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `hom_report_threads` (
+  `id` varchar(36) NOT NULL,
+  `thread_id` varchar(36) DEFAULT NULL,
+  `user_reporter_id` varchar(36) DEFAULT NULL,
+  `level` enum('1','2','3','4','5') DEFAULT '1',
+  `reason` varchar(200) DEFAULT NULL,
+  `created_by` varchar(36) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE,
+  KEY `fk_report_thread` (`thread_id`),
+  CONSTRAINT `fk_report_thread` FOREIGN KEY (`thread_id`) REFERENCES `hom_threads` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `hom_save_threads`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `hom_save_threads` (
+  `id` varchar(36) NOT NULL,
+  `thread_id` varchar(36) DEFAULT NULL,
+  `comment_thread_id` varchar(36) DEFAULT NULL,
+  `user_id` varchar(36) DEFAULT NULL,
+  `created_by` varchar(36) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE,
+  KEY `fk_thread_bookmark` (`thread_id`),
+  CONSTRAINT `fk_thread_bookmark` FOREIGN KEY (`thread_id`) REFERENCES `hom_threads` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `hom_share_threads`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `hom_share_threads` (
+  `id` varchar(36) NOT NULL,
+  `thread_id` varchar(36) DEFAULT NULL,
+  `user_id` varchar(36) DEFAULT NULL,
+  `created_by` varchar(36) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `hom_thread_detail_polls`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `hom_thread_detail_polls` (
+  `id` varchar(36) NOT NULL,
+  `thread_poll_id` varchar(36) DEFAULT NULL,
+  `poll_name` varchar(200) DEFAULT NULL,
+  `counter` int(5) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE,
+  KEY `fk_detail_poll_poll` (`thread_poll_id`),
+  CONSTRAINT `fk_detail_poll_poll` FOREIGN KEY (`thread_poll_id`) REFERENCES `hom_thread_polls` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `hom_thread_detail_voters`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `hom_thread_detail_voters` (
+  `id` varchar(36) NOT NULL,
+  `detail_poll_id` varchar(36) DEFAULT NULL,
+  `user_id` varchar(36) DEFAULT NULL,
+  `created_by` varchar(36) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE,
+  KEY `fk_poll_voters_detail` (`detail_poll_id`),
+  CONSTRAINT `fk_poll_voters_detail` FOREIGN KEY (`detail_poll_id`) REFERENCES `hom_thread_detail_polls` (`id`) ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `hom_thread_polls`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `hom_thread_polls` (
+  `id` varchar(36) NOT NULL,
+  `thread_id` varchar(36) DEFAULT NULL,
+  `description` varchar(200) DEFAULT NULL,
+  `duration_poll_id` varchar(36) DEFAULT NULL,
+  `created_by` varchar(36) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_by` varchar(36) DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `version` smallint(3) DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE,
+  KEY `fk_polls_thread` (`thread_id`),
+  CONSTRAINT `fk_polls_thread` FOREIGN KEY (`thread_id`) REFERENCES `hom_threads` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `hom_thread_type_questions`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `hom_thread_type_questions` (
+  `id` varchar(36) NOT NULL,
+  `thread_id` varchar(36) DEFAULT NULL,
+  `type_question_id` varchar(36) DEFAULT NULL,
+  `main_type` tinyint(1) DEFAULT '1',
+  `created_by` varchar(36) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE,
+  KEY `fk_thread_type` (`thread_id`),
+  CONSTRAINT `fk_thread_type` FOREIGN KEY (`thread_id`) REFERENCES `hom_threads` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `hom_threads`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `hom_threads` (
+  `id` varchar(36) NOT NULL,
+  `slug_id` varchar(120) DEFAULT NULL,
+  `user_id` varchar(36) DEFAULT NULL,
+  `title` varchar(100) DEFAULT NULL,
+  `description` text,
+  `is_active` enum('0','1') DEFAULT '1',
+  `created_by` varchar(36) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_by` varchar(36) DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `deleted_at` timestamp NULL DEFAULT NULL,
+  `version` smallint(3) DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE KEY `unique_slug` (`slug_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `hom_type_questions`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `hom_type_questions` (
+  `id` varchar(36) NOT NULL,
+  `code` varchar(36) DEFAULT NULL,
+  `name` varchar(100) DEFAULT NULL,
+  `menu_id` varchar(200) DEFAULT NULL,
+  `color` varchar(8) DEFAULT NULL,
+  `color_bg` varchar(8) DEFAULT NULL,
+  `is_active` enum('0','1') DEFAULT '1',
+  `created_by` varchar(36) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_by` varchar(36) DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `version` smallint(3) DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `migrations`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `migrations` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `migration` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `batch` int(11) NOT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `password_resets`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `password_resets` (
+  `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `token` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  KEY `password_resets_email_index` (`email`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `personal_access_tokens`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `personal_access_tokens` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `tokenable_type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tokenable_id` bigint(20) unsigned NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `token` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `abilities` text COLLATE utf8mb4_unicode_ci,
+  `last_used_at` timestamp NULL DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `personal_access_tokens_token_unique` (`token`),
+  KEY `personal_access_tokens_tokenable_type_tokenable_id_index` (`tokenable_type`,`tokenable_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `tre_providers`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `tre_providers` (
+  `id` varchar(36) COLLATE utf8_unicode_ci NOT NULL,
+  `code` varchar(36) COLLATE utf8_unicode_ci NOT NULL,
+  `company_id` varchar(36) COLLATE utf8_unicode_ci NOT NULL,
+  `state_id` varchar(36) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `name` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `tagline` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `summary` longtext COLLATE utf8_unicode_ci NOT NULL,
+  `logo` varchar(200) COLLATE utf8_unicode_ci NOT NULL,
+  `logo_2` varchar(200) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `is_list_prior` enum('0','1') COLLATE utf8_unicode_ci NOT NULL,
+  `num` smallint(6) DEFAULT NULL,
+  `is_active` enum('0','1') COLLATE utf8_unicode_ci NOT NULL,
+  `created_by` varchar(36) COLLATE utf8_unicode_ci NOT NULL,
+  `created_at` timestamp NOT NULL,
+  `updated_by` varchar(36) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `version` smallint(6) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `tre_qna_attachments`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `tre_qna_attachments` (
+  `id` varchar(36) COLLATE utf8_unicode_ci NOT NULL,
+  `qna_message_id` varchar(36) COLLATE utf8_unicode_ci NOT NULL,
+  `category` enum('0','1') COLLATE utf8_unicode_ci NOT NULL,
+  `file_attach` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `file_type` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `is_success` enum('0','1') COLLATE utf8_unicode_ci NOT NULL,
+  `created_by` varchar(36) COLLATE utf8_unicode_ci NOT NULL,
+  `created_at` timestamp NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `tre_qna_messages`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `tre_qna_messages` (
+  `id` varchar(36) COLLATE utf8_unicode_ci NOT NULL,
+  `qna_order_id` varchar(36) COLLATE utf8_unicode_ci NOT NULL,
+  `is_admin` enum('0','1') COLLATE utf8_unicode_ci NOT NULL,
+  `user_id` varchar(36) COLLATE utf8_unicode_ci NOT NULL,
+  `message` varchar(200) COLLATE utf8_unicode_ci NOT NULL,
+  `attach` varchar(200) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `is_read_other` enum('0','1') COLLATE utf8_unicode_ci NOT NULL,
+  `created_by` varchar(36) COLLATE utf8_unicode_ci NOT NULL,
+  `created_at` timestamp NOT NULL,
+  `updated_by` varchar(36) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `version` smallint(6) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `tre_qna_orders`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `tre_qna_orders` (
+  `id` varchar(36) COLLATE utf8_unicode_ci NOT NULL,
+  `tre_qna_id` varchar(36) COLLATE utf8_unicode_ci NOT NULL,
+  `order_id` varchar(36) COLLATE utf8_unicode_ci NOT NULL,
+  `created_by` varchar(36) COLLATE utf8_unicode_ci NOT NULL,
+  `created_at` timestamp NOT NULL,
+  `updated_by` varchar(36) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `version` smallint(6) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `tre_qnas`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `tre_qnas` (
+  `id` varchar(36) COLLATE utf8_unicode_ci NOT NULL,
+  `user_id` varchar(36) COLLATE utf8_unicode_ci NOT NULL,
+  `created_by` varchar(36) COLLATE utf8_unicode_ci NOT NULL,
+  `created_at` timestamp NOT NULL,
+  `updated_by` varchar(36) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `version` smallint(6) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `tre_train_educations`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `tre_train_educations` (
+  `id` varchar(36) COLLATE utf8_unicode_ci NOT NULL,
+  `trainer_id` varchar(36) COLLATE utf8_unicode_ci NOT NULL,
+  `title_degree_id` varchar(36) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `other_title` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `university_id` varchar(36) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `other_university` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `major_id` varchar(36) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `other_major` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `is_current` enum('0','1') COLLATE utf8_unicode_ci NOT NULL,
+  `start_date` date NOT NULL,
+  `end_date` date DEFAULT NULL,
+  `created_by` varchar(36) COLLATE utf8_unicode_ci NOT NULL,
+  `created_at` timestamp NOT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `version` smallint(6) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_train_education_trainer` (`trainer_id`),
+  CONSTRAINT `fk_train_education_trainer` FOREIGN KEY (`trainer_id`) REFERENCES `tre_trainers` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `tre_train_providers`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `tre_train_providers` (
+  `id` varchar(36) COLLATE utf8_unicode_ci NOT NULL,
+  `trainer_id` varchar(36) COLLATE utf8_unicode_ci NOT NULL,
+  `provider_id` varchar(36) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `is_active` enum('0','1') COLLATE utf8_unicode_ci NOT NULL,
+  `created_by` varchar(36) COLLATE utf8_unicode_ci NOT NULL,
+  `created_at` timestamp NOT NULL,
+  `updated_by` varchar(36) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `version` smallint(6) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_train_provider_trainer` (`trainer_id`),
+  KEY `fk_train_provider_provider` (`provider_id`),
+  CONSTRAINT `fk_train_provider_provider` FOREIGN KEY (`provider_id`) REFERENCES `tre_providers` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_train_provider_trainer` FOREIGN KEY (`trainer_id`) REFERENCES `tre_trainers` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `tre_trainer_certificate`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `tre_trainer_certificate` (
+  `id` varchar(36) NOT NULL,
+  `trainer_id` varchar(36) NOT NULL,
+  `title` varchar(100) NOT NULL,
+  `organization` varchar(50) NOT NULL,
+  `link` varchar(200) NOT NULL,
+  `is_novalidate` tinyint(1) NOT NULL,
+  `created_at` timestamp NOT NULL,
+  `updated_at` timestamp NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `tre_trainer_details`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `tre_trainer_details` (
+  `id` varchar(36) NOT NULL,
+  `trainer_id` varchar(36) NOT NULL,
+  `company` varchar(100) DEFAULT NULL,
+  `position` varchar(100) DEFAULT NULL,
+  `industry_id` varchar(36) DEFAULT NULL,
+  `city_id` varchar(36) DEFAULT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `is_current` enum('0','1') NOT NULL,
+  `start_date` date NOT NULL,
+  `end_date` date DEFAULT NULL,
+  `is_active` enum('0','1') NOT NULL,
+  `created_by` varchar(36) NOT NULL,
+  `created_at` timestamp NOT NULL,
+  `updated_by` varchar(36) DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `version` smallint(6) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `tre_trainers`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `tre_trainers` (
+  `id` varchar(36) COLLATE utf8_unicode_ci NOT NULL,
+  `code` varchar(36) COLLATE utf8_unicode_ci NOT NULL,
+  `name` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `motto` varchar(200) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `skills` json DEFAULT NULL,
+  `description` text COLLATE utf8_unicode_ci,
+  `photo` varchar(200) COLLATE utf8_unicode_ci NOT NULL,
+  `is_list_prior` enum('0','1') COLLATE utf8_unicode_ci NOT NULL,
+  `num` smallint(6) NOT NULL,
+  `is_active` enum('0','1') COLLATE utf8_unicode_ci NOT NULL,
+  `created_by` varchar(36) COLLATE utf8_unicode_ci NOT NULL,
+  `created_at` timestamp NOT NULL,
+  `updated_by` varchar(36) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `version` smallint(6) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `tre_trx_classes`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `tre_trx_classes` (
+  `id` varchar(36) COLLATE utf8_unicode_ci NOT NULL,
+  `trx_train_event_id` varchar(36) COLLATE utf8_unicode_ci NOT NULL,
+  `type_class` enum('1','2') COLLATE utf8_unicode_ci NOT NULL,
+  `seq` int(11) NOT NULL,
+  `last_order_date` date NOT NULL,
+  `description` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `min_participant` int(11) NOT NULL,
+  `max_participant` int(11) DEFAULT NULL,
+  `max_order` int(11) DEFAULT NULL,
+  `min_order` int(11) DEFAULT NULL,
+  `kurs_dollar` enum('0','1') COLLATE utf8_unicode_ci NOT NULL,
+  `price` float NOT NULL,
+  `is_discount` enum('0','1') COLLATE utf8_unicode_ci NOT NULL,
+  `kurs_dollar_discount` enum('0','1') COLLATE utf8_unicode_ci DEFAULT NULL,
+  `price_discount` float DEFAULT NULL,
+  `is_scheduled` enum('0','1') COLLATE utf8_unicode_ci NOT NULL,
+  `created_by` varchar(36) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `tre_trx_order_participants`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `tre_trx_order_participants` (
+  `id` varchar(36) COLLATE utf8_unicode_ci NOT NULL,
+  `trx_order_id` varchar(36) COLLATE utf8_unicode_ci NOT NULL,
+  `is_user` enum('0','1') COLLATE utf8_unicode_ci NOT NULL,
+  `name` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `email` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `phone_code_id` varchar(36) COLLATE utf8_unicode_ci NOT NULL,
+  `phone` varchar(20) COLLATE utf8_unicode_ci NOT NULL,
+  `created_by` varchar(36) COLLATE utf8_unicode_ci NOT NULL,
+  `created_at` timestamp NOT NULL,
+  `updated_by` varchar(36) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `version` smallint(6) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_participant_order` (`trx_order_id`),
+  CONSTRAINT `fk_participant_order` FOREIGN KEY (`trx_order_id`) REFERENCES `tre_trx_orders` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `tre_trx_orders`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `tre_trx_orders` (
+  `id` varchar(36) COLLATE utf8_unicode_ci NOT NULL,
+  `trx_code` varchar(36) COLLATE utf8_unicode_ci NOT NULL,
+  `trx_number` int(11) NOT NULL AUTO_INCREMENT,
+  `trx_date` datetime NOT NULL,
+  `user_id` varchar(36) COLLATE utf8_unicode_ci NOT NULL,
+  `class_id` varchar(36) COLLATE utf8_unicode_ci NOT NULL,
+  `schedule_id` varchar(36) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `quantity` int(11) NOT NULL,
+  `price` float NOT NULL,
+  `discount` float DEFAULT NULL,
+  `total_price` float NOT NULL,
+  `note` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `position` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `known_from` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `is_confirm_agree` enum('0','1') COLLATE utf8_unicode_ci NOT NULL,
+  `account_name` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `account_bank` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `bank_id` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `tf_upload` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `status` enum('order','paid') COLLATE utf8_unicode_ci NOT NULL,
+  `created_by` varchar(36) COLLATE utf8_unicode_ci NOT NULL,
+  `created_at` timestamp NOT NULL,
+  `updated_by` varchar(36) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `version` smallint(6) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `trx_number` (`trx_number`),
+  KEY `fk_order_class` (`class_id`),
+  KEY `fk_order_schedule` (`schedule_id`),
+  CONSTRAINT `fk_order_class` FOREIGN KEY (`class_id`) REFERENCES `tre_trx_classes` (`id`) ON UPDATE CASCADE,
+  CONSTRAINT `fk_order_schedule` FOREIGN KEY (`schedule_id`) REFERENCES `tre_trx_schedules` (`id`) ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `tre_trx_schedules`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `tre_trx_schedules` (
+  `id` varchar(36) COLLATE utf8_unicode_ci NOT NULL,
+  `trx_train_event_id` varchar(36) COLLATE utf8_unicode_ci NOT NULL,
+  `class_public_id` varchar(36) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `class_inhouse_id` varchar(36) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `date` date NOT NULL,
+  `end_date` date DEFAULT NULL,
+  `is_same_hour` enum('0','1') COLLATE utf8_unicode_ci NOT NULL,
+  `schedule_id` varchar(36) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `start_hour` time NOT NULL,
+  `end_hour` time NOT NULL,
+  `is_active` enum('0','1') COLLATE utf8_unicode_ci NOT NULL,
+  `created_by` varchar(36) COLLATE utf8_unicode_ci NOT NULL,
+  `created_at` timestamp NOT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_schedule_train_event` (`trx_train_event_id`),
+  CONSTRAINT `fk_schedule_train_event` FOREIGN KEY (`trx_train_event_id`) REFERENCES `tre_trx_train_events` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `tre_trx_syllabus`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `tre_trx_syllabus` (
+  `id` varchar(36) COLLATE utf8_unicode_ci NOT NULL,
+  `trx_train_event_id` varchar(36) COLLATE utf8_unicode_ci NOT NULL,
+  `title` varchar(30) COLLATE utf8_unicode_ci NOT NULL,
+  `sub_title` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `seq` int(11) NOT NULL,
+  `created_by` varchar(36) COLLATE utf8_unicode_ci NOT NULL,
+  `created_at` timestamp NOT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_syllabus_train_evant` (`trx_train_event_id`),
+  CONSTRAINT `fk_syllabus_train_evant` FOREIGN KEY (`trx_train_event_id`) REFERENCES `tre_trx_train_events` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `tre_trx_syllabus_details`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `tre_trx_syllabus_details` (
+  `id` varchar(36) COLLATE utf8_unicode_ci NOT NULL,
+  `syllabus_id` varchar(36) COLLATE utf8_unicode_ci NOT NULL,
+  `icon` varchar(3) COLLATE utf8_unicode_ci NOT NULL,
+  `head` varchar(200) COLLATE utf8_unicode_ci NOT NULL,
+  `description` longtext COLLATE utf8_unicode_ci NOT NULL,
+  `seq` int(3) NOT NULL,
+  `created_by` varchar(36) COLLATE utf8_unicode_ci NOT NULL,
+  `created_at` timestamp NOT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_detail_sylabus` (`syllabus_id`),
+  CONSTRAINT `fk_detail_sylabus` FOREIGN KEY (`syllabus_id`) REFERENCES `tre_trx_syllabus` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `tre_trx_train_events`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `tre_trx_train_events` (
+  `id` varchar(36) COLLATE utf8_unicode_ci NOT NULL,
+  `slug_id` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `trx_code` varchar(36) COLLATE utf8_unicode_ci NOT NULL,
+  `trx_number` int(11) NOT NULL AUTO_INCREMENT,
+  `trx_date` datetime NOT NULL,
+  `user_id` varchar(36) COLLATE utf8_unicode_ci NOT NULL,
+  `type` enum('training','event') COLLATE utf8_unicode_ci NOT NULL,
+  `provider_id` varchar(36) COLLATE utf8_unicode_ci NOT NULL,
+  `title` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `sustainable` varchar(200) COLLATE utf8_unicode_ci NOT NULL,
+  `summary` longtext COLLATE utf8_unicode_ci NOT NULL,
+  `location` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `level` enum('beginner','intermediate','advanced') COLLATE utf8_unicode_ci NOT NULL,
+  `type_question_id` varchar(36) COLLATE utf8_unicode_ci NOT NULL,
+  `banner` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `banner_card` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `is_ads` enum('0','1') COLLATE utf8_unicode_ci NOT NULL,
+  `banner_slide` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `num_ads` smallint(6) DEFAULT NULL,
+  `ads_start_date` date DEFAULT NULL,
+  `ads_end_date` date DEFAULT NULL,
+  `status` enum('waiting','paid','finished','published','banned','canceled') COLLATE utf8_unicode_ci NOT NULL,
+  `paid_date` date DEFAULT NULL,
+  `published_date` date DEFAULT NULL,
+  `finished_date` date DEFAULT NULL,
+  `banned_date` date DEFAULT NULL,
+  `canceled_date` date DEFAULT NULL,
+  `created_by` varchar(36) COLLATE utf8_unicode_ci NOT NULL,
+  `created_at` timestamp NOT NULL,
+  `updated_by` varchar(36) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `version` smallint(6) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_slug` (`slug_id`),
+  KEY `trx_number` (`trx_number`),
+  KEY `fk_train_event_provider` (`provider_id`),
+  CONSTRAINT `fk_train_event_provider` FOREIGN KEY (`provider_id`) REFERENCES `tre_providers` (`id`) ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `tre_trx_trainers`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `tre_trx_trainers` (
+  `id` varchar(36) COLLATE utf8_unicode_ci NOT NULL,
+  `trx_train_event_id` varchar(36) COLLATE utf8_unicode_ci NOT NULL,
+  `trainer_id` varchar(36) COLLATE utf8_unicode_ci NOT NULL,
+  `created_by` varchar(36) COLLATE utf8_unicode_ci NOT NULL,
+  `created_at` timestamp NOT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_trx_trainer_train_event` (`trx_train_event_id`),
+  KEY `fk_trx_trainer_trainer` (`trainer_id`),
+  CONSTRAINT `fk_trainer_train_event` FOREIGN KEY (`trx_train_event_id`) REFERENCES `tre_trx_train_events` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_trx_trainer_trainer` FOREIGN KEY (`trainer_id`) REFERENCES `tre_trainers` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `utl_bank_accounts`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `utl_bank_accounts` (
+  `id` varchar(36) COLLATE utf8_unicode_ci NOT NULL,
+  `code` varchar(36) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `name` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `account_number` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `bank` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `is_active` enum('0','1') COLLATE utf8_unicode_ci DEFAULT NULL,
+  `created_by` varchar(36) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_by` varchar(36) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `version` smallint(6) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `utl_banks`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `utl_banks` (
+  `id` varchar(36) COLLATE utf8_unicode_ci NOT NULL,
+  `code` varchar(36) COLLATE utf8_unicode_ci NOT NULL,
+  `icon` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `bank_name` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `is_active` enum('0','1') COLLATE utf8_unicode_ci NOT NULL,
+  `created_by` varchar(36) COLLATE utf8_unicode_ci NOT NULL,
+  `created_at` timestamp NOT NULL,
+  `updated_by` varchar(36) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `version` smallint(6) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+INSERT INTO `migrations` VALUES (1,'2014_10_12_000000_create_users_table',1);
+INSERT INTO `migrations` VALUES (2,'2014_10_12_100000_create_password_resets_table',1);
+INSERT INTO `migrations` VALUES (3,'2019_08_19_000000_create_failed_jobs_table',1);
+INSERT INTO `migrations` VALUES (4,'2021_07_25_002930_create_kategoris_table',2);
+INSERT INTO `migrations` VALUES (6,'2022_08_29_021856_create_com_notifications_table',4);
+INSERT INTO `migrations` VALUES (12,'2019_12_14_000001_create_personal_access_tokens_table',5);
